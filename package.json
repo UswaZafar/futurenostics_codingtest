@@ -6,7 +6,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch backend/server.ts",
     "build": "prisma generate && tsc",
     "start": "node dist/server.js"
   },

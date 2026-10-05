@@ -1,6 +1,12 @@
 # TaskHub Pro
 
-Task management app with org-scoped RBAC. Express API plus a React client.
+Task management app with org-scoped RBAC.
+
+```
+backend/   Express API
+client/     React frontend
+prisma/     schema and seed
+```
 
 ## Tech stack
 
@@ -42,7 +48,7 @@ npm install
 
 ## Run
 
-API (http://localhost:4000):
+API from the project root (http://localhost:4000):
 
 ```bash
 npm run dev
