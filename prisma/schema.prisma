@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  MANAGER
+  ADMIN
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Organization {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  createdAt DateTime @default(now())
+  users     User[]
+  tasks     Task[]
+}
+
+model User {
+  id            String         @id @default(uuid()) @db.Uuid
+  email         String         @unique
+  passwordHash  String
+  roles         Role[]
+  orgId         String         @db.Uuid
+  createdAt     DateTime       @default(now())
+  organization  Organization   @relation(fields: [orgId], references: [id])
+  tasks         Task[]
+  refreshTokens RefreshToken[]
+}
+
+model Task {
+  id           String       @id @default(uuid()) @db.Uuid
+  orgId        String       @db.Uuid
+  ownerId      String       @db.Uuid
+  title        String
+  status       TaskStatus
+  priority     TaskPriority
+  tags         String[]
+  dueDate      DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  organization Organization @relation(fields: [orgId], references: [id])
+  owner        User         @relation(fields: [ownerId], references: [id])
+
+  @@index([orgId, updatedAt])
+  @@index([orgId, status, priority])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  token     String   @unique
+  userId    String   @db.Uuid
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
